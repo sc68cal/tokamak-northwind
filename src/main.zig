@@ -15,7 +15,7 @@ fn regionDetail(alloc: std.mem.Allocator, conn: zqlite.Conn, id: i64) !Region {
     const query = "select * from Regions where RegionID=?";
     if (try conn.row(query, .{id})) |row| {
         defer row.deinit();
-        return Region{
+        return .{
             .RegionID = row.int(0),
             .RegionDescription = try std.fmt.allocPrint(
                 alloc,
