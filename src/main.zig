@@ -32,7 +32,10 @@ pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
 
-    var conn = try zqlite.open("./northwind.db", zqlite.OpenFlags.EXResCode);
+    var conn = try zqlite.open(
+        "./northwind.db",
+        zqlite.OpenFlags.EXResCode,
+    );
     var cx = .{&conn};
 
     const lopts: tk.ListenOptions = .{ .port = 8000 };
