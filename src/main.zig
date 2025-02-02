@@ -29,12 +29,21 @@ pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
 
-    const lopts: tk.ListenOptions = .{ .port = 8000 };
-
     var conn = try zqlite.open("./northwind.db", zqlite.OpenFlags.EXResCode);
     var cx = .{&conn};
 
-    const server = try tk.Server.init(gpa.allocator(), routes, .{ .listen = lopts, .injector = tk.Injector.init(&cx, null) });
+    const lopts: tk.ListenOptions = .{ .port = 8000 };
+
+    const initopts = .{
+        .listen = lopts,
+        .injector = tk.Injector.init(&cx, null),
+    };
+
+    const server = try tk.Server.init(
+        gpa.allocator(),
+        routes,
+        initopts,
+    );
     defer server.deinit();
 
     try server.start();
