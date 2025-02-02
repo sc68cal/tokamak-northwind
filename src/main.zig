@@ -76,7 +76,7 @@ fn db_connect() !zqlite.Conn {
     );
 }
 
-test "Test fetching ID 2 from Region" {
+test "Test fetching IDs from Region" {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     var alloc = gpa.allocator();
@@ -88,4 +88,8 @@ test "Test fetching ID 2 from Region" {
     );
     std.debug.assert(result.RegionID == 2);
     alloc.free(result.RegionDescription);
+    try std.testing.expectError(
+        error.NotFound,
+        regionDetail(alloc, conn, 9),
+    );
 }
