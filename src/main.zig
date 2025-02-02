@@ -34,10 +34,7 @@ pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
 
-    var conn = try zqlite.open(
-        "./northwind.db",
-        zqlite.OpenFlags.EXResCode,
-    );
+    var conn = db_connect();
     var cx = .{&conn};
 
     const lopts: tk.ListenOptions = .{ .port = 8000 };
@@ -74,4 +71,11 @@ pub fn main() !void {
 fn shutdown(_: c_int) callconv(.C) void {
     server_instance.*.stop();
     std.debug.print("\nStopped\n", .{});
+}
+
+fn db_connect() !zqlite.Conn {
+    return try zqlite.open(
+        "./northwind.db",
+        zqlite.OpenFlags.EXResCode,
+    );
 }
