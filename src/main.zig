@@ -2,6 +2,8 @@ const std = @import("std");
 const tk = @import("tokamak");
 const zqlite = @import("zqlite");
 
+var server_instance: *const *tk.Server = undefined;
+
 const Region = struct {
     RegionID: i64,
     RegionDescription: []const u8,
@@ -28,6 +30,7 @@ fn regionDetail(alloc: std.mem.Allocator, conn: zqlite.Conn, id: i64) !Region {
 }
 
 pub fn main() !void {
+    std.debug.print("Starting\n", .{});
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
 
@@ -44,12 +47,31 @@ pub fn main() !void {
         .injector = tk.Injector.init(&cx, null),
     };
 
+    // call our shutdown function (below) when
+    // SIGINT or SIGTERM are received
+    std.posix.sigaction(std.posix.SIG.INT, &.{
+        .handler = .{ .handler = shutdown },
+        .mask = std.posix.empty_sigset,
+        .flags = 0,
+    }, null);
+    std.posix.sigaction(std.posix.SIG.TERM, &.{
+        .handler = .{ .handler = shutdown },
+        .mask = std.posix.empty_sigset,
+        .flags = 0,
+    }, null);
+
     const server = try tk.Server.init(
         gpa.allocator(),
         routes,
         initopts,
     );
     defer server.deinit();
+    server_instance = &server;
 
     try server.start();
+}
+
+fn shutdown(_: c_int) callconv(.C) void {
+    server_instance.*.stop();
+    std.debug.print("\nStopped\n", .{});
 }
