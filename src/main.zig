@@ -19,11 +19,7 @@ fn regionDetail(alloc: std.mem.Allocator, conn: zqlite.Conn, id: i64) !Region {
         defer row.deinit();
         return .{
             .RegionID = row.int(0),
-            .RegionDescription = try std.fmt.allocPrint(
-                alloc,
-                "{s}",
-                .{row.text(1)},
-            ),
+            .RegionDescription = try alloc.dupe(u8, row.text(1)),
         };
     }
     return error.NotFound;
