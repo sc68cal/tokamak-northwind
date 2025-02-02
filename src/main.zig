@@ -30,7 +30,7 @@ pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
 
-    var conn = db_connect();
+    var conn = try db_connect();
     var cx = .{&conn};
 
     const lopts: tk.ListenOptions = .{ .port = 8000 };
