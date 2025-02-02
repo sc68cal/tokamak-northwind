@@ -40,7 +40,7 @@ pub fn main() !void {
 
     const lopts: tk.ListenOptions = .{ .port = 8000 };
 
-    const initopts = .{
+    const initopts: tk.ServerOptions = .{
         .listen = lopts,
         .injector = tk.Injector.init(&cx, null),
     };
