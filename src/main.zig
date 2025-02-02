@@ -11,13 +11,17 @@ const routes: []const tk.Route = &.{
     .get("/Regions/:id", regionDetail),
 };
 
-fn regionDetail(conn: zqlite.Conn, id: i64) !Region {
+fn regionDetail(alloc: std.mem.Allocator, conn: zqlite.Conn, id: i64) !Region {
     const query = "select * from Regions where RegionID=?";
     if (try conn.row(query, .{id})) |row| {
         defer row.deinit();
         return Region{
             .RegionID = row.int(0),
-            .RegionDescription = row.text(1),
+            .RegionDescription = try std.fmt.allocPrint(
+                alloc,
+                "{s}",
+                .{row.text(1)},
+            ),
         };
     }
     return error.NotFound;
