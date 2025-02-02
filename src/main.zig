@@ -11,15 +11,14 @@ const routes: []const tk.Route = &.{
     .get("/Regions/:id", regionDetail),
 };
 
-fn regionDetail(res: *tk.Response, conn: zqlite.Conn, id: i64) !Region {
+fn regionDetail(conn: zqlite.Conn, id: i64) !Region {
     const query = "select * from Regions where RegionID=?";
     if (try conn.row(query, .{id})) |row| {
         defer row.deinit();
-        const result = Region{
+        return Region{
             .RegionID = row.int(0),
             .RegionDescription = row.text(1),
         };
-        try res.json(result, .{});
     }
     return error.NotFound;
 }
