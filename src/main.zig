@@ -11,7 +11,7 @@ const routes: []const tk.Route = &.{
     .get("/Regions/:id", regionDetail),
 };
 
-fn regionDetail(res: *tk.Response, conn: zqlite.Conn, id: i64) !void {
+fn regionDetail(res: *tk.Response, conn: zqlite.Conn, id: i64) !Region {
     if (try conn.row(
         "select * from Regions where RegionID=?",
         .{id},
@@ -22,10 +22,8 @@ fn regionDetail(res: *tk.Response, conn: zqlite.Conn, id: i64) !void {
             .RegionDescription = row.text(1),
         };
         try res.json(result, .{});
-    } else {
-        res.status = 404;
-        res.body = "Not Found";
     }
+    return error.NotFound;
 }
 
 pub fn main() !void {
