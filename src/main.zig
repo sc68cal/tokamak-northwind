@@ -79,3 +79,17 @@ fn db_connect() !zqlite.Conn {
         zqlite.OpenFlags.EXResCode,
     );
 }
+
+test "Test fetching ID 2 from Region" {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    var alloc = gpa.allocator();
+    const conn = try db_connect();
+
+    const result = try regionDetail(alloc, conn, 2);
+    std.debug.assert(
+        std.mem.eql(u8, result.RegionDescription, "Western"),
+    );
+    std.debug.assert(result.RegionID == 2);
+    alloc.free(result.RegionDescription);
+}
