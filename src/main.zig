@@ -12,7 +12,10 @@ const routes: []const tk.Route = &.{
 };
 
 fn regionDetail(res: *tk.Response, conn: zqlite.Conn, id: i64) !void {
-    if (try conn.row("select * from Regions where RegionID=?", .{id})) |row| {
+    if (try conn.row(
+        "select * from Regions where RegionID=?",
+        .{id},
+    )) |row| {
         defer row.deinit();
         const result = Region{
             .RegionID = row.int(0),
