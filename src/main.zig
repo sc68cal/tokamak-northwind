@@ -86,8 +86,11 @@ test "Test fetching IDs from Region" {
     );
     std.debug.assert(result.RegionID == 2);
     alloc.free(result.RegionDescription);
+}
+
+test "Test fetching an invalid ID" {
     try std.testing.expectError(
         error.NotFound,
-        regionDetail(alloc, conn, 9),
+        regionDetail(std.testing.allocator, try db_connect(), 9),
     );
 }
