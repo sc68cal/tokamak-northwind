@@ -77,9 +77,7 @@ fn db_connect() !zqlite.Conn {
 }
 
 test "Test fetching IDs from Region" {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    var alloc = gpa.allocator();
+    const alloc = std.testing.allocator;
     const conn = try db_connect();
 
     const result = try regionDetail(alloc, conn, 2);
