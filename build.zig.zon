@@ -24,8 +24,8 @@
     // internet connectivity.
     .dependencies = .{
         .tokamak = .{
-            .url = "git+https://github.com/cztomsik/tokamaK#c44ee5afea976052bef84a5990a3d713e5bacc37",
-            .hash = "12205db366fc41b8d3d7f032f27f11ef17299a4d99d6b8202c3ae17f11929861d79a",
+            .url = "git+https://github.com/cztomsik/tokamak#713e78c597aafb205f44b7c8a4ce7d18aa58bf01",
+            .hash = "1220550955d24d843a954450403e7379fbb350f2a9d8fcd31b48837c2c3ea1f4e7a4",
         },
         .zqlite = .{
             .url = "git+https://github.com/karlseguin/zqlite.zig#f0de7a25b97c38c3209e218d6b1a79e93ed54be1",
